@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Worldskills</title>
+    <style>
+        html {
+            background-color: #FFEBCD;
+        }
+        
+        body {
+            font-family: 'Times New Roman', Times, serif;
+            margin: 0;
+            padding: 0;
+        }
+        
+        * {  
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        .container {
+            display: flex;
+            justify-content: space-between;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .window {
+            display: flex;
+            flex-direction: column;
+            background-color: #ffffff;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            padding: 20px;
+            width: 100%;
+        }
+        
+        .nested-window {
+            background-color: #f9f9f9;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            padding: 15px;
+        }
+        
+        textarea {
+            width: 100%;
+            min-height: 150px;
+            resize: vertical;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            padding: 8px;
+            font-family: 'Times New Roman', Times, serif;
+        }
+        
+        textarea[readonly] {
+            background-color: #e9ecef;
+            cursor: not-allowed;
+        }
+        
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        
+        button:hover {
+            background-color: #0056b3;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            .nested-window {
+                padding: 10px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            textarea {
+                min-height: 100px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="window">
+            <div class="nested-window">
+                <h3>Текст отзыва</h3>
+                <label for="bana">Введите ваш отзыв:</label><br>
+                <textarea id="bana" rows="4" maxlength="500" placeholder="Ваш отзыв..."></textarea><br> <!--не забываем менять название базы-->
+                <button onclick="callAPI()">Отправить</button><br><!--не забываем менять название базы-->
+                <label for="result">Результат:</label><br>
+                <textarea id="result" rows="4" maxlength="500" placeholder="Ответ..." readonly></textarea><br>
+            </div> 
+        </div>
+    </div>
+    <script>
+        async function callAPI() {
+            const banaText = document.getElementById('bana').value.trim();//не забываем менять название базы
+            const resultTextArea = document.getElementById('result');
+            
+            if (!banaText) {
+                resultTextArea.value = 'Ошибка: Пожалуйста, введите отзыв.';
+                return;
+            }
+
+            resultTextArea.value = 'Загрузка...';
+
+            try {
+                const response = await fetch('https://jbee30waj9.execute-api.eu-west-2.amazonaws.com/test/bana', { //не забываем менять название базы
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ bana: banaText })
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP ошибка: ${response.status}`);
+                }
+
+                const result = await response.json();
+                if (result.Sentiment) {
+                    resultTextArea.value = `Тональность: ${result.Sentiment}`;
+                } else {
+                    resultTextArea.value = 'Ошибка: Ответ API не содержит поле Sentiment.';
+                }
+            } catch (error) {
+                resultTextArea.value = `Ошибка: ${error.message || 'Не удалось выполнить запрос.'}`;
+            }
+        }
+    </script>
+</body>
+</html>
