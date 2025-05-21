@@ -96,9 +96,9 @@
         <div class="window">
             <div class="nested-window">
                 <h3>Текст отзыва</h3>
-                <label for="bana">Введите ваш отзыв:</label><br>
-                <textarea id="bana" rows="4" maxlength="500" placeholder="Ваш отзыв..."></textarea><br> <!--не забываем менять название базы-->
-                <button onclick="callAPI()">Отправить</button><br><!--не забываем менять название базы-->
+                <label for="baza">Введите ваш отзыв:</label><br>
+                <textarea id="baza" rows="4" maxlength="500" placeholder="Ваш отзыв..."></textarea><br> 
+                <button onclick="callAPI()">Отправить</button><br>
                 <label for="result">Результат:</label><br>
                 <textarea id="result" rows="4" maxlength="500" placeholder="Ответ..." readonly></textarea><br>
             </div> 
@@ -106,10 +106,10 @@
     </div>
     <script>
         async function callAPI() {
-            const banaText = document.getElementById('bana').value.trim();//не забываем менять название базы
+            const bazaText = document.getElementById('baza').value.trim();
             const resultTextArea = document.getElementById('result');
             
-            if (!banaText) {
+            if (!bazaText) {
                 resultTextArea.value = 'Ошибка: Пожалуйста, введите отзыв.';
                 return;
             }
@@ -117,12 +117,12 @@
             resultTextArea.value = 'Загрузка...';
 
             try {
-                const response = await fetch('https://jbee30waj9.execute-api.eu-west-2.amazonaws.com/test/bana', { //не забываем менять название базы
+                const response = await fetch('https://wf3exazuxd.execute-api.eu-west-2.amazonaws.com/test/baza', { 
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify({ bana: banaText })
+                    body: JSON.stringify({ baza: bazaText })
                 });
 
                 if (!response.ok) {
